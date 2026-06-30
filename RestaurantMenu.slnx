@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="src/MenuForm/MenuForm.csproj" Id="821a60e0-f40b-4f3c-9271-0381592b7644" />
   <Project Path="src/RestaurantMenu/RestaurantMenu.csproj" />
   <Project Path="tests/TestRestaurantMenu/TestRestaurantMenu.csproj" Id="79beb345-2748-449f-aa64-75ec484e9194" />
 </Solution>
