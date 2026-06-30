@@ -16,11 +16,13 @@ namespace MenuForm
             var commonItems = richTextBox2.Text.Split('\n')
                 .Select(x => x.Trim())
                 .Where(x => !string.IsNullOrEmpty(x))
+                .Select(x => $"О.М.: {x}")
                 .ToArray();
 
             var winterItems = richTextBox1.Text.Split('\n')
                 .Select(x => x.Trim())
                 .Where(x => !string.IsNullOrEmpty(x))
+                .Select(x => $"З.М.: {x}")
                 .ToArray();
 
             var itemsPerPage = 0;
