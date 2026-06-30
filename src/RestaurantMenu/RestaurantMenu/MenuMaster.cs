@@ -4,7 +4,7 @@
     {
         private int dishesPerPage;
         private readonly List<string> dishes;
-        private int winterStartIndex;
+        private int winterMenuStartIndex;
 
         public MenuMaster(IEnumerable<string> commonMenuDishes, IEnumerable<string> winterMenuDishes, int dishesPerPage)
         {
@@ -17,30 +17,51 @@
             if (dishesPerPage < 1)
                 throw new ArgumentException("Dishes per page can't be less then 1");
 
+            this.dishesPerPage = dishesPerPage;
+
             dishes = new List<string>();
             dishes.AddRange(commonMenu);
             dishes.AddRange(winterMenu);
 
-            if (winterMenu.Count > 0)
-            {
-                var commonMenuLastPage = (int)Math.Ceiling(commonMenu.Count / dishesPerPage);
-                var commonMenuModulo = commonMenu.Count % dishesPerPage;
-                winterStartIndex = commonMenuModulo == 0 ? commonMenuLastPage + 1 : commonMenuLastPage;
-            }
-            else
-                winterStartIndex = -1;
+            winterMenuStartIndex = winterMenu.Count > 0 ? commonMenu.Count() : -1;
         }
 
-        public int GetWinterMenuFirstPage() => winterStartIndex;
+        public int GetWinterMenuFirstPage()
+        {
+            if (winterMenuStartIndex == -1) return 0;
+            return (int)Math.Floor(winterMenuStartIndex / dishesPerPage);
+        }
 
-        public int GetDishesNumber();
+        public int GetDishesNumber() => dishes.Count;
 
-        public int GetPagesNumber();
+        public int GetPagesNumber() => (int)Math.Ceiling(dishes.Count / dishesPerPage);
 
-        public int GetDishesNumberOnPage(int page);
+        public int GetDishesNumberOnPage(int page)
+        {
+            var pageDishes = GetPageDishesIndexes(page);
+            return pageDishes.end - pageDishes.start;
+        }
 
-        public IEnumerable<string> GetDishesOnPage(int page);
+        public IEnumerable<string> GetDishesOnPage(int page)
+        {
+            var pageDishes = GetPageDishesIndexes(page);
+            return dishes[pageDishes.start..pageDishes.end];
+        }
 
-        public IEnumerable<string> GetFirstDisesOnPages();
+        public IEnumerable<string> GetFirstDisesOnPages()
+        {
+            for (var i = 0; i < dishes.Count; i+= dishesPerPage)
+                yield return dishes[i];
+        }
+
+        private (int start, int end) GetPageDishesIndexes(int page)
+        {
+            if (page < 1 || page > GetPagesNumber())
+                throw new ArgumentOutOfRangeException("page is out of menu range");
+
+            var start = (page - 1) * dishesPerPage;
+            var end = Math.Min(start + dishesPerPage, dishes.Count);
+            return (start, end);
+        }
     }
 }
