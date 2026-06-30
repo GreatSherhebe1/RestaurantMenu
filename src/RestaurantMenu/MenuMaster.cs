@@ -8,7 +8,7 @@
 
         public MenuMaster(IEnumerable<string> commonMenuDishes, IEnumerable<string> winterMenuDishes, int dishesPerPage)
         {
-            var commonMenu = commonMenu?.ToList() ?? new List<string>();
+            var commonMenu = commonMenuDishes?.ToList() ?? new List<string>();
             var winterMenu = winterMenuDishes?.ToList() ?? new List<string>();
 
             if (commonMenu.Count() + winterMenu.Count() < 1)
@@ -29,12 +29,14 @@
         public int GetWinterMenuFirstPage()
         {
             if (winterMenuStartIndex == -1) return 0;
-            return (int)Math.Floor(winterMenuStartIndex / dishesPerPage);
+            return (int)Math.Floor((double)winterMenuStartIndex / dishesPerPage);
         }
+
+        public IEnumerable<string> GetDisies() => dishes.AsReadOnly();
 
         public int GetDishesNumber() => dishes.Count;
 
-        public int GetPagesNumber() => (int)Math.Ceiling(dishes.Count / dishesPerPage);
+        public int GetPagesNumber() => (int)Math.Ceiling((double)dishes.Count / dishesPerPage);
 
         public int GetDishesNumberOnPage(int page)
         {
@@ -50,8 +52,8 @@
 
         public IEnumerable<string> GetFirstDisesOnPages()
         {
-            for (var i = 0; i < dishes.Count; i+= dishesPerPage)
-                yield return dishes[i];
+            return dishes.GetRange(0, dishes.Count)
+                .Where((value, index) => index % dishesPerPage == 0);
         }
 
         private (int start, int end) GetPageDishesIndexes(int page)
