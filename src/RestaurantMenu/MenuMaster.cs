@@ -29,7 +29,7 @@
         public int GetWinterMenuFirstPage()
         {
             if (winterMenuStartIndex == -1) return 0;
-            return (int)Math.Floor((double)winterMenuStartIndex / dishesPerPage);
+            return (int)Math.Floor((double)winterMenuStartIndex / dishesPerPage) + 1;
         }
 
         public IEnumerable<string> GetDisies() => dishes.AsReadOnly();
